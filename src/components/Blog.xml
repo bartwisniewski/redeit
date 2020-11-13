@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Blog>
+   <Entries count='1'>
+       <Entry id='1'>
+           <Title>First entry</Title>
+           <Picture>LogoBig4_3.jpg</Picture>
+           <Exercise>1</Exercise>
+           <Text>This is first blog entry</Text>
+       </Entry>
+   </Entries>
+</Blog>

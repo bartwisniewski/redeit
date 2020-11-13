@@ -1,0 +1,62 @@
+.exercise-picture {
+    height: 200px;
+    max-width: 400px;
+}
+
+.has-background-yellow {
+    background-color: rgb(252, 212, 3)
+}
+
+.has-background-light-yellow {
+    background-color: rgb(252, 246, 206)
+}
+
+.hero-bg-img {
+    background: url("ColognePanorama.jpg")center center;
+    background-size:cover;
+}
+
+.table-icon {
+        margin-right: 0px;
+        margin-left: 5px;
+      }
+
+.img-icon {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.icon-inactive {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+
+.icon-hover {
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* For IE8 and earlier */
+}
+
+DateTimePicker {
+      border: 0
+}
+
+.picture-with-text {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.top-centered {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
