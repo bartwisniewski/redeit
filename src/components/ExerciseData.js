@@ -89,9 +89,9 @@ const fahrrad = new WordData("Fahrrad", "rower", "der", []);
 const motorrad = new WordData("Motorrad", "motocykl", "der", []);
 
 const exercise_data = [
-  new ConjugationData(1, "test", "gramatyka, podstawy", "A1", [sein, haben], false),
-  new ConjugationData(2, "test", "gramatyka, podstawy", "A1", [], true),
-  new TranslationData(3, "test3", "słownictwo, podstawy", "A1", [auto, fahrrad, motorrad], 10),
+  new ConjugationData(1, "Odmiana haben i sein", "gramatyka, podstawy", "A1", [sein, haben], false),
+  new ConjugationData(2, "Osoby po niemiecku", "gramatyka, podstawy", "A1", [], true),
+  new TranslationData(3, "Tłumaczenie", "słownictwo, podstawy", "A1", [auto, fahrrad, motorrad], 10),
   new GapData(4, "Wie heißt das Gegenteil? Ergänzen Sie.", "słowotwórstwo", "A2",
           [new SentenceData("Das Zimmer ist möbliert. <-> Das Zimmer ist unmöbliert.", 4, 9),
            new SentenceData("Die Nebenkosten sind exclusive. <-> Die Nebenkosten sind inklusive.", 4, 9),

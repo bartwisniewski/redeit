@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import { Icon, SearchBar, Tile } from './Components';
-import { getData, getCookie, dateToYMD } from "./Utils";
+import { getData, getCookie, dateToYMD, compare_date_arr } from "./Utils";
 import ExercisePlay from "./Exercise";
 
 import { ContactSmall, ContactSmallAbout } from "./Contact";
@@ -32,7 +32,6 @@ class Blog extends React.Component{
   };
 
   forceRefresh = () => {
-    // console.log("force refresh");
     const refresh = this.state.refresh;
     this.setState({ refresh: !refresh });
   };
@@ -45,7 +44,6 @@ class Blog extends React.Component{
 }
 
   render(){
-    // console.log("render Blogs site");
     const {view, entry_id, refresh} = this.state;
     const {match} = this.props;
     const match_parent = match;
@@ -90,12 +88,7 @@ class BlogTiles extends React.Component{
     };
 
   componentDidMount() {
-    //console.log("Mount Blog");
-    //console.log(blog_data);
     this.setState({ data: blog_data, loaded: true });
-    //this.state.data = blog_data;// new XMLParser().parseFromString(blog_data);    // Assume xmlText contains the example XML
-    //console.log(this.state.data);
-    //console.log(this.state.data.getElementsByTagName('Entry'));
   }
 
   componentDidUpdate(prevProps) {
@@ -113,18 +106,12 @@ class BlogTiles extends React.Component{
     let elements = [];
     let el1 = <p>brak wpisów</p>;
     let el2 = [];
-    console.log("Render");
     let data_count = data.length;
-    console.log(data_count);
     if (data_count > 0){
       elements = [...data];
-      console.log(elements);
       const el1_data = elements.splice(0, 1)
-      console.log(el1_data);
       el1 = <BlogEntry size={1} data = {el1_data[0]} width = {6} match={match}/>;
-      console.log(el1);
       el2 = elements.length >= 2 ? elements.splice(0, 2) : (elements.length >=1 ? elements.splice(0, 1) : []);
-      console.log(el2);
     }
 
     const colours = ["is-dark","is-danger","is-warning", "is-info", "is-link", "is-success"];
@@ -184,12 +171,10 @@ class BlogRead extends React.Component{
   getEntry = () => {
     const {id} = this.props;
     const blog_entry = blog_data.filter(entry => {return(entry.id == id)})[0];
-    //console.log(blog_entry);
     this.setState({ data: blog_entry, loaded: true });
   }
 
   componentDidMount() {
-    console.log("Mount BlogRead");
     this.getEntry();
   }
 
@@ -242,17 +227,7 @@ class BlogList extends React.Component{
         this.setState({ side: side}, this.getEntries);
         }
   }
-/*
-  compare = ( a, b ) => {
-    if ( a.date < b.date ){
-      return -1;
-    }
-    if ( a.last_nom > b.last_nom ){
-      return 1;
-    }
-    return 0;
-  }
-*/
+
   getEntries = () => {
     const {side, count} = this.state;
     const {query} = this.props;
@@ -270,13 +245,12 @@ class BlogList extends React.Component{
       }).splice(start, count)
       :
       [...blog_data].splice(start, count);
-    //console.log(blog_list[0].date);
-    //console.log(blog_list);
+
+    blog_list.sort(compare_date_arr);
     this.setState({ data: blog_list, loaded: true });
   };
 
   componentDidMount() {
-    //console.log("Mount BlogList");
     this.getEntries();
 
   }
@@ -328,8 +302,6 @@ class BlogEntry extends React.Component {
   render() {
     const {placeholder} = this.state;
     const {data, size, match} = this.props; // size - 0 full, 1 big, 2 medium, 3 small
-    //console.log("blog entry render, data:");
-    //console.log(data);
     if (!data)
       return placeholder;
     let title_size = 4;
@@ -365,8 +337,8 @@ class BlogEntry extends React.Component {
         edit_icon = "essentials32-edit";
         exercise = data.exercise ? <ExercisePlay id={data.exercise} blog={true}/> : "";
         //img_style = {maxWidth: 800};
-        if (data.text.length > 270)
-          text = data.text.substring(0, 270) + " ...";
+        //if (data.text.length > 270)
+        text = data.text;//.split('\n').map(str => <p>{str}</p>);//.substring(0, 270) + " ...";
         break;
       case 2:
         title_size = 5;
@@ -374,9 +346,8 @@ class BlogEntry extends React.Component {
         content_size = "is-small";
         garbage_icon = "essentials16-garbage-1";
         edit_icon = "essentials16-edit";
-        exercise = undefined;//data.exercise;// ? <ExercisePreview id={data.exercise_id} blog={true} no_pictures={true}/> : undefined;
-        //img_style = {maxWidth: 200};
-        text = data.text.substring(0, 180) + " ...";
+        exercise = data.exercise ? <ExercisePlay id={data.exercise} blog={true}/> : "";
+        text = data.text.length > 180 ? data.text.substring(0, 180) + " ..." : data.text;
         break;
       case 3:
         title_size = 6;
@@ -387,12 +358,12 @@ class BlogEntry extends React.Component {
         exercise = undefined;
         img_style = {display: "block", marginLeft: "auto", marginRight: "auto", width: "30%", marginTop: 10, marginBottom: 20};
         //img_style = {maxWidth: 100};
-        text = data.text.substring(0, 90) + " ...";
+        text = data.text.length > 90 ? data.text.substring(0, 90) + " ..." : data.text;
         break;
       default:
           ;
         };
-
+//<p dangerouslySetInnerHTML={{__html: text}}></p>
     const title = <React.Fragment><Link className={"title is-"+title_size+" has-text-centred"} to={match.path+"/"+data.id}>{data.title}</Link></React.Fragment>
 
     return <React.Fragment>
@@ -422,7 +393,8 @@ class BlogEntry extends React.Component {
                   </figure>
                 }
             <div className={"content "+content_size+" has-text-justified"}>
-              <p dangerouslySetInnerHTML={{__html: text}}></p>
+              {text.split('\n').map(str => <p>{str}</p>)}
+
             </div>
             {exercise &&
             <div>

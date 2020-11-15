@@ -533,8 +533,6 @@ class GapPlay extends React.Component {
   checkFinished = (results) => {
     const {data } = this.props;
     const {sentences } = data;
-    console.log(sentences);
-    console.log(results);
     if (results.length < sentences.length){
       return false;
     }
@@ -564,16 +562,12 @@ class GapPlay extends React.Component {
   }
 
   drop = (ev, index) => {
-    console.log("drop");
-    console.log(index);
     ev.preventDefault();
     const {data, results, set_results} = this.props;
     const {selection, sentences_arr, sentences_gap} = this.state;
     const drag_index_sel = parseInt(ev.dataTransfer.getData("text"));
     const drag_selection = selection[drag_index_sel];
     const drop_sentence_arr = sentences_arr[index];
-    console.log(drag_selection);
-    console.log(drop_sentence_arr);
     let drag_index = 0;
 
 
@@ -592,7 +586,6 @@ class GapPlay extends React.Component {
         }
     }
     const gap_index = sentences_gap[index];
-    console.log(drop_sentence_arr[gap_index]);
     const result = drag_selection === drop_sentence_arr[gap_index];
 
     //if(result){
@@ -600,16 +593,13 @@ class GapPlay extends React.Component {
     selection.splice(drag_index_sel, 1);
     //}
 
-    console.log("check finished");
     const finished = this.checkFinished(results);
-    console.log(finished);
     this.setState({selection: selection}, () => this.props.setResults(results, finished));
   }
 
   componentDidMount() {
     const {data, results} = this.props;
     const {sentences} = data;
-    //console.log(sentences);
     const selection = [];
     const sentences_arr = [];
     const sentences_disp = [];
@@ -641,9 +631,9 @@ class GapPlay extends React.Component {
     const {data, results, set_results} = this.props;
     const {sentences} = data;
     const {selection, sentences_arr, sentences_disp, loaded} = this.state;
-    console.log("render GAp play");
-    console.log(sentences_disp);
-    console.log(selection);
+    //console.log("render GAp play");
+    //console.log(sentences_disp);
+    //console.log(selection);
 
     if (sentences_disp.length === 0){
       return <p>Brak zdan</p>;
@@ -789,8 +779,8 @@ class TranslationSortPlay extends React.Component {
   checkFinished = (results) => {
     const {data } = this.props;
     const {words } = data;
-    console.log(words);
-    console.log(results);
+    //console.log(words);
+    //console.log(results);
     if (results.length < words.length){
       return false;
     }
@@ -850,9 +840,9 @@ class TranslationSortPlay extends React.Component {
       selection.splice(drag_index_sel, 1);
     }
 
-    console.log("check finished");
+    //console.log("check finished");
     const finished = this.checkFinished(results);
-    console.log(finished);
+    //console.log(finished);
     this.setState({selection: selection}, () => this.props.setResults(results, finished));
   }
 
@@ -874,8 +864,8 @@ class TranslationSortPlay extends React.Component {
     const {data, results, set_results} = this.props;
     const {words} = data;
     const {selection} = this.state;
-    console.log(words);
-    console.log(selection);
+    //console.log(words);
+    //console.log(selection);
 
     if (words.length === 0){
       return <p>Brak słów</p>;
@@ -1014,11 +1004,11 @@ class ConjugationPlay extends React.Component {
     };
 
     checkFinished = (results) => {
-      console.log("Check finished")
+      //console.log("Check finished")
       const {data } = this.props;
       const {words } = data;
-      console.log(words);
-      console.log(results);
+      //console.log(words);
+      //console.log(results);
       if (results.length < words.length+1){
         return false;
       }
@@ -1029,7 +1019,7 @@ class ConjugationPlay extends React.Component {
           }
           else {
             for (var j = 0; j < 6; j++) {
-              console.log(results[i][j]);
+              //console.log(results[i][j]);
                 if (results[i][j] == null || typeof(results[i][j]) === 'undefined'){
                   return false;
                 }
@@ -1088,17 +1078,12 @@ class ConjugationPlay extends React.Component {
     const persons = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
     const conjugation = words.map((el, index) => {return el.variant});
     let result = false;
-    console.log("drop");
-    console.log(drag_text);
     if (index===0){
-        console.log(persons[row_index]);
         result = drag_text === persons[row_index];
     }
     else {
-      console.log(conjugation[index-1][row_index]);
       result = drag_text === conjugation[index-1][row_index];
     }
-    console.log(result);
     let length = results.length;
     if (length <= index){
       for(let i = 0; i < (index - length + 1); i++) {
@@ -1117,10 +1102,8 @@ class ConjugationPlay extends React.Component {
       selection.splice(drag_index, 1);
 
     }
-    console.log(results);
     //this.setState({selection: selection}, () => this.props.setResults(results));
     const finished = this.checkFinished(results);
-    console.log(finished);
     const callback = () => {this.props.setResults(results, finished)};
     this.setState({selection: selection}, callback);
   }
@@ -1244,11 +1227,8 @@ loadResults(){
 }
 
 componentDidMount() {
-
-  console.log("Mount Exercise");
   const {id} = this.props;
   const data = exercise_data.filter(ex => {return(ex.id == id)})[0];
-  console.log(data);
   this.setState({ data: data, loaded: true });
 
 }
@@ -1267,9 +1247,6 @@ componentDidUpdate(prevProps) {
 }
 
 setResults = (results, finished) => {
-  console.log("Exercise, set results");
-  console.log(results);
-  console.log(finished);
   this.setState({ results: results, finished: finished});
 }
 
@@ -1298,7 +1275,6 @@ handleRestart = () => {
     const { id } = this.props;
 
     let exercise = data.id;
-    console.log(data.type);
     switch(data.type) {
           case 0:
               exercise = finished ? <ConjugationPreview data ={data} results={results}/> : <ConjugationPlay data ={data} results={results} setResults={this.setResults}/>;

@@ -24,6 +24,32 @@ function overalStatus(status){
 }
 
 
+function compare_date_arr(b, a) {
+  const a_arr = a.date.split('.');
+  const b_arr = b.date.split('.');
+  if (a_arr[2] > b_arr[2]) return 1;
+  if (a_arr[2] < b_arr[2]) return -1;
+  if (a_arr[1] > b_arr[1]) return 1;
+  if (a_arr[1] < b_arr[1]) return -1;
+  if (a_arr[0] > b_arr[0]) return 1;
+  if (a_arr[0] < b_arr[0]) return -1;
+  return 0;
+}
+
+
+function compare_date_arr_asc(a, b) {
+  const a_arr = a.date.split('.');
+  const b_arr = b.date.split('.');
+  if (a_arr[2] > b_arr[2]) return 1;
+  if (a_arr[2] < b_arr[2]) return -1;
+  if (a_arr[1] > b_arr[1]) return 1;
+  if (a_arr[1] < b_arr[1]) return -1;
+  if (a_arr[0] > b_arr[0]) return 1;
+  if (a_arr[0] < b_arr[0]) return -1;
+  return 0;
+}
+
+
 function handleDate(results) {
   if(typeof(results[0]) !== "undefined"){
     for (var i = 0; i < results.length; i++) {
@@ -169,5 +195,5 @@ function quasiRandomColour(index) {
 }
 
 export {
-  getCookie, handleDate, dateToYMD, dateToYMDHm, dateToDjango, calcEnd, dateToHm, dateWithEnd, overalStatus, addDays, shuffleArray, quasiRandomColour, dateToWHm
+  getCookie, handleDate, dateToYMD, dateToYMDHm, dateToDjango, calcEnd, dateToHm, dateWithEnd, overalStatus, addDays, shuffleArray, quasiRandomColour, dateToWHm, compare_date_arr
 }
