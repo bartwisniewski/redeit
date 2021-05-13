@@ -153,7 +153,7 @@ class Home extends React.Component{
                       </div>
                       <div className="content" style={{paddingLeft: 40, paddingRight: 40}}>
                           <p>
-                          Jestem absolwentką wydziału neofilologii Uniwersytetu Warszawskiego. Od blisko 5 lat uczę języka niemieckiego prywatnie oraz dla szkół językowych.
+                          Jestem absolwentką wydziału neofilologii Uniwersytetu Warszawskiego. Od wielu lat uczę języka niemieckiego prywatnie oraz dla szkół językowych.
                           Spędziłam 4 lata pracując oraz ucząc się w Niemczech, wiedzę którą tam zdobyłam chętnie wykorzystuję na lekcjach.
                           Prowadzę zajęcia dla osób w każdym wieku i na każdym poziomie zaawansowania.
                           Program dopasowuję indywidualnie dla każdego ucznia.
