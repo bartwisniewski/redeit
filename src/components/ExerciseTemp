@@ -1,0 +1,367 @@
+
+/*
+class SortPreview extends React.Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        main_groups : [],
+        groups: [],
+        grouped: [],
+        };
+    };
+
+
+  getWordIdx = (group_idx, word_idx) => {
+      const {grouped} = this.state;
+      const {words} = this.props;
+      for(let i = 0; i < words.length; i++) {
+        if(words[i].id === grouped[group_idx][word_idx].id)
+          return i;
+      }
+
+      return undefined;
+    }
+
+  getResult= (group_idx, word_idx) => {
+      const {results} = this.props;
+      const words_idx = this.getWordIdx(group_idx, word_idx);
+      if (!results)
+        return undefined;
+      if (results.length < words_idx)
+        return undefined;
+      if (typeof(results[words_idx]) === 'undefined')
+        return undefined;
+      return results[words_idx];
+    }
+
+  renderWord = (el, index) => {
+      const {groups, grouped} = this.state;
+      const {no_pictures} = this.props;
+      const is_group = (el.comment === "group");
+      var group_idx = undefined;
+      var global_idx = 0;
+
+      if (is_group){
+        for(let i = 0; i < groups.length; i++) {
+            if(groups[i].id === el.id){
+              group_idx = i;
+              break;
+            }
+            else{
+              global_idx += grouped[i].length;
+            }
+        }
+      }
+
+      return (<React.Fragment>
+        {is_group ? <div className="tile is-vertical" key={"group"+group_idx}>
+                      <div className="tile is-parent" onDrop={(ev) => this.drop(ev, index)} onDragOver={this.allowDrop}>
+                        <div className="tile is-child">
+                          <div className="level">
+                            <div className="level-item">
+                              <Word
+                                view={(el.icon == null || no_pictures) ? 4 : 6} // hero or picture
+                                id={el.word}
+                                colour={quasiRandomColour(group_idx)}
+                                size=""
+                                translation=""
+                                highlight_start={el.highlight_start}
+                                highlight_end={el.highlight_end}
+                                exercise_icon={el.icon}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {grouped.length > group_idx &&
+                      <div className="tile is-parent" onDrop={(ev) => this.drop(ev, index)} onDragOver={this.allowDrop}>
+                        {grouped[group_idx].map((el2, index2) => <React.Fragment>
+                                                                  {this.renderWord(el2, index2)}
+                                                                  </React.Fragment>
+                        )}
+                      </div>
+                      }
+                    </div>
+                  :
+                    <span className="button" key={"grouped-button"+index}>
+                      {el.text}
+                    </span>
+                  }
+                  </React.Fragment>)
+    }
+
+
+  componentDidMount() {
+    const {words, results} = this.props;
+    const main_groups = [];
+    const groups = [];
+    const grouped = [];
+    var length = 0;
+
+    for(let i = 0; i < words.length; i++) {
+        if (words[i].comment === "group") {
+          groups.push(words[i]);
+        }
+    }
+
+    for(let i = 0; i < groups.length; i++) {
+        if (groups[i].group == null || groups[i].group === "") {
+          main_groups.push(groups[i]);
+        }
+    }
+
+    for(let i = 0; i < words.length; i++) {
+          for(let j = 0; j < groups.length; j++) {
+
+            if (words[i].group === groups[j].group_name){
+              length = grouped.length;
+              if (length <= j){
+                for(let k = 0; k < (j - length + 1); k++) {
+                    grouped.push([]);
+                  }
+              }
+              grouped[j].push(words[i]);
+          }
+      }
+    }
+
+    this.setState({groups: groups, grouped: grouped, main_groups: main_groups});
+  }
+
+  render () {
+    const {words, results, set_results} = this.props;
+    const {main_groups, groups, grouped} = this.state;
+    if (words.length === 0){
+      return <p>Brak słów</p>
+    }
+    if (main_groups.length === 0){
+      return <p>Błąd</p>
+    }
+
+    return (
+      <React.Fragment>
+        <div className="tile is-ancestor" key="drop area">
+          {main_groups.map((el, index) => this.renderWord(el, index))}
+        </div>
+      </React.Fragment>
+    );
+  };
+}
+
+
+class SortPlay extends React.Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        selection: [],
+        main_groups: [],
+        groups: [],
+        grouped: [],
+        };
+    };
+
+    handleCheck = (index) => {
+      const {results} = this.props;
+      results[index] = true;
+      this.props.setResults(results);
+    };
+
+    checkDone = (index) => {
+        const {results} = this.props;
+        if (!results)
+          return false;
+        if (results.length < index)
+          return false;
+        if (results[index] == null || typeof(results[index]) === 'undefined')
+          return false;
+        return true;
+      }
+
+  checkResult = (index) => {
+    const {results} = this.props;
+    if (this.checkDone(index)){
+        return results[index];
+    }
+    else {
+      return undefined;
+    }
+  }
+
+  allowDrop = (ev) => {
+    ev.preventDefault();
+  }
+
+  drag = (ev, index) => {
+    try {
+      ev.dataTransfer.setData("text", index);
+    } catch (error) {
+      const dataList = ev.dataTransfer.items;
+      dataList.add(index, "text");
+    }
+  }
+
+  drop = (ev, index) => {
+    ev.preventDefault();
+    const {words, results, set_results} = this.props;
+    const {selection, groups, grouped} = this.state;
+    const drag_index = parseInt(ev.dataTransfer.getData("text"));
+    const drag_word = selection[drag_index];
+
+    const drop_word = groups[index];
+    let drag_word_index = 0;
+
+    for(let i = 0; i < words.length; i++) {
+      if(drag_word.id === words[i].id){
+        drag_word_index = i;
+        break;
+      }
+    }
+
+
+    let length = results.length;
+    if (length <= drag_word_index){
+      for(let i = 0; i < (drag_word_index - length + 1); i++) {
+          results.push(undefined);
+        }
+    }
+
+    const result = drag_word.group === drop_word.group_name;
+
+    if(result){
+      results[drag_word_index] = result;
+      length = grouped.length;
+      if (length <= index){
+        for(let i = 0; i < (index - length + 1); i++) {
+            grouped.push([]);
+          }
+      }
+      grouped[index].push(drag_word);
+      selection.splice(drag_index, 1);
+    }
+
+    this.setState({selection: selection, grouped: grouped}, () => this.props.setResults(results));
+  }
+
+  renderWord = (el, index) => {
+      const {groups, grouped} = this.state;
+      const {no_pictures} = this.props;
+      const is_group = (el.comment === "group");
+      var group_idx = undefined;
+
+      if (is_group){
+        for(let i = 0; i < groups.length; i++) {
+            if(groups[i].id === el.id){
+              group_idx = i;
+              break;
+            }
+        }
+      }
+
+      return (<React.Fragment>
+        {is_group ? <div className="tile is-vertical" key={"group"+group_idx}>
+                      <div className="tile is-parent" onDrop={(ev) => this.drop(ev, group_idx)} onDragOver={this.allowDrop}>
+                        <div className="tile is-child">
+                          <div className="level">
+                            <div className="level-item">
+                              <Word
+                                view={(el.icon == null || no_pictures) ? 4 : 6} // button or picture
+                                id={el.word}
+                                colour={quasiRandomColour(group_idx)}
+                                size=""
+                                translation=""
+                                highlight_start={el.highlight_start}
+                                highlight_end={el.highlight_end}
+                                exercise_icon={el.icon}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {grouped.length > group_idx &&
+                      <div className="tile is-parent">
+                        {grouped[group_idx].map((el2, index2) => <React.Fragment>
+                                                                  {this.renderWord(el2, index2)}
+                                                                  </React.Fragment>
+                        )}
+                      </div>
+                      }
+                    </div>
+                  :
+                    <span className="button" key={"grouped-button"+index}>
+                      {el.text}
+                    </span>
+                  }
+                  </React.Fragment>)
+    }
+
+  componentDidMount() {
+    const {groups, results} = this.props;
+    const main_groups = [];
+    const grouped = [];
+    const selection = [...words];
+    for(let i = 0; i < groups.length; i++) {
+        length = results.length;
+        if (length <= i){
+          for(let j = length; j < (i - length + 1); j++) {
+              results.push(undefined);
+            }
+        }
+        results[i] = true;
+        }
+        selection = selection.concat(groups[i].words);
+    }
+
+    shuffleArray(selection);
+
+    for(let i = 0; i < groups.length; i++) {
+        if (groups[i].group == null || groups[i].group === "") {
+          main_groups.push(groups[i]);
+        }
+    }
+
+    for(let i = 0; i < words.length; i++) {
+        if (words[i].comment === "group") {
+          for(let j = 0; j < groups.length; j++) {
+            if (words[i].group === groups[j].group_name){
+              length = grouped.length;
+              if (length <= j){
+                for(let k = 0; k < (j - length + 1); k++) {
+                    grouped.push([]);
+                  }
+              }
+              grouped[j].push(words[i]);
+            }
+          }
+        }
+    }
+
+    this.setState({groups: groups, grouped: grouped, main_groups: main_groups, selection: selection}, () => this.props.setResults(results));
+  }
+
+  render () {
+    const {words, results, set_results} = this.props;
+    const {selection, groups, grouped, main_groups} = this.state;
+
+    if (words.length === 0){
+      return <p>Brak słów</p>;
+    }
+
+
+    return (
+
+      <React.Fragment>
+        <div className="tile is-ancestor" key="drop area">
+          {main_groups.map((el, index) => this.renderWord(el, index))}
+        </div>
+        <div className="buttons" key="drag area">
+          {selection.map((el, index) => (
+            <span className="button" key={"select-button"+index} style={{cursor: 'pointer'}} draggable="true" onDragStart={(ev) => this.drag(ev, index)}>
+              {el.text}
+            </span>
+                ))}
+        </div>
+      </React.Fragment>
+    );
+  };
+}
+*/

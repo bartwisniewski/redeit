@@ -195,5 +195,7 @@ function quasiRandomColour(index) {
 }
 
 export {
-  getCookie, handleDate, dateToYMD, dateToYMDHm, dateToDjango, calcEnd, dateToHm, dateWithEnd, overalStatus, addDays, shuffleArray, quasiRandomColour, dateToWHm, compare_date_arr
+  getCookie, handleDate, dateToYMD, dateToYMDHm, dateToDjango, calcEnd, 
+  dateToHm, dateWithEnd, overalStatus, addDays, shuffleArray, quasiRandomColour, 
+  dateToWHm, compare_date_arr, compare_date_arr_asc
 }

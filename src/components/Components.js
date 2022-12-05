@@ -18,7 +18,7 @@ class Icon extends Component {
   render() {
     const {active, active_class, inactive_class, className} = this.props;
     const icon_class = active ? active_class: (inactive_class ? inactive_class : active_class + " icon-inactive");
-    const span_class = className ? "img-icon" + " " + className : "img-icon";
+    const span_class = className ? "img-icon " + className : "img-icon";
     return (
       <span className={span_class}>
         <i className={icon_class} style={{cursor: 'pointer'}} onClick={this.props.handleClick} onMouseOver={this.handleIconMouseOver} onMouseLeave={this.handleIconMouseLeave}></i>
@@ -40,7 +40,6 @@ class StatusIcon extends React.Component {
           return <Icon active={true} active_class="essentials16-error"  {...other}/>
       case 1:
           return <Icon active={true} active_class="essentials16-edit"  {...other}/>
-                  case 3:
       default:
           return <Icon active={true} active_class="essentials16-idea"  {...other}/>
         };
@@ -81,20 +80,6 @@ class SearchPicture extends Component {
   queryChange = e => {
     this.setState({ query: e.target.value}, this.getIcons);
   };
-
-  getIcons = () => {
-    const {endpoint, query} = this.state;
-    const options = {query: query, limit: 3}
-  }
-
-  getMoreIcons = () => {
-    const {data} = this.state;
-  }
-
-  previousIcons = () => {
-    const {data} = this.state;
-  }
-
 
   getPictureUrl = (picture) => {
     let picture_url = "";

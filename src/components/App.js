@@ -1,10 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import Menu from "./Menu"
 import Contact from "./Contact"
 import Blog from "./Blog"
-import {Tile } from './Components';
 import {ImgProfile, ImgLogoBig} from '../static'
 
 
@@ -37,17 +35,8 @@ class App extends React.Component{
   }
 
   render(){
-    const {placeholder, site} = this.state;
+    const {placeholder} = this.state;
     const loaded = true;
-    let disp_site = <p>Nothing to display</p>;
-    const sel_site = site ? site : 1;
-    switch(sel_site) {
-      case 1:
-          disp_site = <Contact/>;
-          break;
-      default:
-          disp_site = <p>Nothing to display</p>;
-        };
 
     const blog = ({ match }) => <Blog match={match}/>;
 
@@ -90,12 +79,6 @@ class Home extends React.Component{
       const logo = <figure className="image is-4by3">
                           <img src={ImgLogoBig} alt="Deutsch ist toll!"/>
                         </figure>
-
-
-      const photo = <figure className="image is-3by4">
-                          <img src={ImgProfile} alt="Moja fotografia"/>
-                        </figure>
-
 
       const address = <article className="message is-dark">
                         <div className="message-header">
