@@ -84,11 +84,8 @@ class ConjugationPlay extends React.Component {
     };
 
     checkFinished = (results) => {
-      console.log("Check finished")
       const {data } = this.props;
       const {words } = data;
-      console.log(words);
-      console.log(results);
       if (results.length < words.length+1){
         return false;
       }
@@ -99,7 +96,6 @@ class ConjugationPlay extends React.Component {
           }
           else {
             for (var j = 0; j < 6; j++) {
-              console.log(results[i][j]);
                 if (results[i][j] == null || typeof(results[i][j]) === 'undefined'){
                   return false;
                 }
@@ -158,17 +154,13 @@ class ConjugationPlay extends React.Component {
     const persons = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
     const conjugation = words.map((el, index) => {return el.variant});
     let result = false;
-    console.log("drop");
-    console.log(drag_text);
     if (index===0){
-        console.log(persons[row_index]);
         result = drag_text === persons[row_index];
     }
     else {
-      console.log(conjugation[index-1][row_index]);
+
       result = drag_text === conjugation[index-1][row_index];
     }
-    console.log(result);
     let length = results.length;
     if (length <= index){
       for(let i = 0; i < (index - length + 1); i++) {
@@ -187,10 +179,8 @@ class ConjugationPlay extends React.Component {
       selection.splice(drag_index, 1);
 
     }
-    console.log(results);
     //this.setState({selection: selection}, () => this.props.setResults(results));
     const finished = this.checkFinished(results);
-    console.log(finished);
     const callback = () => {this.props.setResults(results, finished)};
     this.setState({selection: selection}, callback);
   }
@@ -238,7 +228,6 @@ class ConjugationPlay extends React.Component {
     const conjugation = words.map((el, index) => {return el.variant});
 
     const result = <ResultDisplay text="aaa" result={this.checkResult(0, 0)}/>;
-    console.log(result);
     return (
       <React.Fragment>
         <div className="level">

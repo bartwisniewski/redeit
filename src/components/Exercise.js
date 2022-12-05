@@ -1,10 +1,10 @@
 import React from "react";
+import { getData } from "./DataConnector"
+
 import {ConjugationPlay, ConjugationPreview} from './Conjugation';
 import {GapPlay, GapPreview} from './Gap';
 import {TranslationSortPlay, TranslationSortPreview} from './TranslationSort';
 import {ExternalExercise} from "./ExternalExercise";
-
-import exercise_data from './ExerciseData.js';
 
 
 class ExercisePlay extends React.Component {
@@ -40,9 +40,7 @@ loadResults(){
 
 componentDidMount() {
   const {id} = this.props;
-  const data = exercise_data.filter(ex => {return(ex.id == id)})[0];
-  this.setState({ data: data, loaded: true });
-
+  getData('exercise', id).then(ret => this.setState({ data: ret.data, loaded: true }));
 }
 
 componentDidUpdate(prevProps) {

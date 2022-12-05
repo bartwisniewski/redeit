@@ -24,6 +24,13 @@ function overalStatus(status){
 }
 
 
+function compare_id(b, a) {
+  if (a.id > b.id) return 1;
+  if (a.id < b.id) return -1;
+  return 0;
+}
+
+
 function compare_date_arr(b, a) {
   const a_arr = a.date.split('.');
   const b_arr = b.date.split('.');
@@ -197,5 +204,5 @@ function quasiRandomColour(index) {
 export {
   getCookie, handleDate, dateToYMD, dateToYMDHm, dateToDjango, calcEnd, 
   dateToHm, dateWithEnd, overalStatus, addDays, shuffleArray, quasiRandomColour, 
-  dateToWHm, compare_date_arr, compare_date_arr_asc
+  dateToWHm, compare_date_arr, compare_date_arr_asc, compare_id
 }

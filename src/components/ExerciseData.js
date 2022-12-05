@@ -1,4 +1,7 @@
 import React from "react";
+import DataList from "./DataList";
+import { compare_id } from "./Utils";
+
 
 class ExerciseData {
   constructor(id, title, categories, level) {
@@ -7,6 +10,13 @@ class ExerciseData {
     this.type = 0;
     this.categories = categories;
     this.level = level;
+  }
+
+  test(query){
+    const ret = this.title.includes(query) || 
+                this.level.includes(query) || 
+                this.categories.includes(query);
+    return ret;
   }
 }
 
@@ -136,7 +146,22 @@ const external2 = <React.Fragment>
 </React.Fragment>
 
 
-const exercise_data = [
+
+class ExerciseDataList extends DataList{
+    
+      filter(query){
+        const filter = query ? query.length >= 2 : false;
+        if(filter){
+          this.return_data = this.return_data.filter((single_object) => {single_object.test(query)});
+        }
+      }
+
+  sort(){
+    this.return_data.sort(compare_id);
+  }
+}
+
+const exercise_data_def = [
   new ConjugationData(1, "Odmiana haben i sein", "gramatyka, podstawy", "A1", [sein, haben], false),
   new ConjugationData(2, "Osoby po niemiecku", "gramatyka, podstawy", "A1", [], true),
   new TranslationData(3, "Tłumaczenie", "słownictwo, podstawy", "A1", [auto, fahrrad, motorrad], 10),
@@ -153,6 +178,8 @@ const exercise_data = [
   //new SortData(2, "test2", "gramatyka", "A2", new GroupData(dativ, []))
   ];
 
+
+const exercise_data = new ExerciseDataList(exercise_data_def);
 
 export default exercise_data;
 
