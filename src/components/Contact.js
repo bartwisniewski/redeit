@@ -1,6 +1,4 @@
-import React, { Component } from "react";
-import { Icon, SearchBar, Tile } from './Components';
-import { getData, getCookie } from "./Utils"
+import React from "react";
 import {ImgProfile, ImgLogoBig} from '../static'
 class Contact extends React.Component{
 

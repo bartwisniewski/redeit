@@ -19,7 +19,7 @@ class BlogData {
   test(query){
     let exercise_test = false;
     if(this.exercise){
-      const {data , length} = getDataLocal('exercise', this.exercise);
+      const {data} = getDataLocal('exercise', this.exercise);
       if (data){
         exercise_test = data.test(query);
       }
@@ -32,6 +32,10 @@ class BlogData {
     return ret;
   }
 
+}
+
+function blog_from_api(data){
+  return new BlogData(data._id, data.title, data.subtitle, data.picture_path, data.exercise_id, data.entry_text, data.author, data.created);
 }
 
 class BlogDataList extends DataList{
@@ -47,7 +51,18 @@ class BlogDataList extends DataList{
   sort(){
     this.return_data.sort(compare_date_arr);
   }
+
 }
+
+function blog_list_from_api(entry_list){
+  const entry_objects = [];
+  for(const entry of entry_list){
+    entry_objects.push(blog_from_api(entry));
+  }
+  const blog_data_list = new BlogDataList(entry_objects.sort(compare_date_arr))
+  return {data: blog_data_list.data, count: blog_data_list.count};
+}
+
 
 const blog_data_def = [
   new BlogData(5,"Das Zimmer ist möbliert","",'',4,"", "Kamila Wiśniewska", "11.11.2020"),
@@ -61,4 +76,4 @@ const blog_data = new BlogDataList(blog_data_def);
 
 export default blog_data;
 
-export { BlogData }
+export { BlogData, blog_list_from_api, blog_from_api }

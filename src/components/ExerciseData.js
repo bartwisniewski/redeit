@@ -161,6 +161,8 @@ class ExerciseDataList extends DataList{
   }
 }
 
+
+
 const exercise_data_def = [
   new ConjugationData(1, "Odmiana haben i sein", "gramatyka, podstawy", "A1", [sein, haben], false),
   new ConjugationData(2, "Osoby po niemiecku", "gramatyka, podstawy", "A1", [], true),
@@ -179,10 +181,59 @@ const exercise_data_def = [
   ];
 
 
+function conjugation_from_api(data){
+  const with_persons = false;
+  return new ConjugationData(data._id, data.title, data.categories, data.level, data.words, with_persons);
+}
+
+
+function translation_from_api(data){
+  return new TranslationData(data._id, data.title, data.categories, data.level, data.words, 10);
+}
+
+
+function gap_from_api(data){
+  const sentences = []
+  for(const sentence of data.sentences){
+    sentences.push(new SentenceData(sentence.sentence, sentence.mark, sentence.gap));
+  }
+  return new GapData(data._id, data.title, data.categories, data.level, sentences);
+}
+
+
+function extern_from_api(data){
+  return new ExternalData(data._id, data.title, data.categories, data.level, data.externals[0]);
+}
+
+
+function exercise_from_api(data){
+  switch(data.exercise_type) {
+    case 0, 1:
+        return conjugation_from_api(data);
+    case 10:
+        return translation_from_api(data);
+    case 30:
+        return gap_from_api(data);
+    case 90:
+        return extern_from_api(data);
+      }
+    return undefined;
+}
+
+
+function exercise_list_from_api(data_list){
+  const exercise_objects = [];
+  for(const exercise of data_list){
+    exercise_objects.push(exercise_from_api(exercise));
+  }
+  const exercise_data_list = new ExerciseDataList(exercise_objects)
+  return {data: exercise_data_list.data, count: exercise_data_list.count};
+}
+
 const exercise_data = new ExerciseDataList(exercise_data_def);
 
 export default exercise_data;
 
 export {
-  ExerciseData, ConjugationData, WordData
+  ExerciseData, exercise_list_from_api, exercise_from_api, ConjugationData, WordData
 }

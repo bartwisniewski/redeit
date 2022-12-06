@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 import {HighlightedText } from './Components';
 
 function ResultDisplay(props){
   const {text, result} = props;
   let button_class = "button is-static";
 
-  if (result == true) {
+  if (result === true) {
     button_class = "button is-primary";
   }
-  else if (result == false) {
+  else if (result === false) {
     button_class = "button is-danger";
   };
 
@@ -18,7 +18,7 @@ function ResultDisplay(props){
 
 function WordButton(props){
   const {data} = props;
-  const {text, translation } = data;
+  const {text} = data;
   const text_as_array = text.split(" ");
   const sentence = text_as_array.length > 1;
   const prepositions = ['der', 'die', 'das', 'pl'];
@@ -58,10 +58,10 @@ function Sentence(props){
     return (
       <React.Fragment>
       {words.map((word, index) => {
-        let ret = index === mark-1 ? <span className={"is-italic" +" "+colour+" "}>{word}</span> : word+" " ;
+        let ret = index === mark-1 ? <span key={"word"+index} className={"is-italic" +" "+colour+" "}>{word}</span> : word+" " ;
         if (index === gap-1)
-          ret = result === undefined ? <span className={"has-background-light"}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          : <span className={result ? "has-text-weight-bold has-text-primary" : "has-text-weight-bold has-text-danger"}>{word}</span>;
+          ret = result === undefined ? <span key={"word"+index} className={"has-background-light"}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          : <span key={"word"+index} className={result ? "has-text-weight-bold has-text-primary" : "has-text-weight-bold has-text-danger"}>{word}</span>;
         return ret;
       })
       }

@@ -40,7 +40,7 @@ loadResults(){
 
 componentDidMount() {
   const {id} = this.props;
-  getData('exercise', id).then(ret => this.setState({ data: ret.data, loaded: true }));
+  getData('exercise', id).then(ret => {this.setState({ data: ret.data, loaded: true })});
 }
 
 componentDidUpdate(prevProps) {

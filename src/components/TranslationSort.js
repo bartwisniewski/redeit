@@ -26,7 +26,7 @@ class TranslationSortPreview extends React.Component {
   }
 
   render () {
-    const {data, results, set_results} = this.props;
+    const {data, results} = this.props;
     const {words} = data;
 
     if (words.length === 0){
@@ -109,8 +109,6 @@ class TranslationSortPlay extends React.Component {
   checkFinished = (results) => {
     const {data } = this.props;
     const {words } = data;
-    //console.log(words);
-    //console.log(results);
     if (results.length < words.length){
       return false;
     }
@@ -141,7 +139,7 @@ class TranslationSortPlay extends React.Component {
 
   drop = (ev, index) => {
     ev.preventDefault();
-    const {data, results, set_results} = this.props;
+    const {data, results} = this.props;
     const {words} = data;
     const {selection} = this.state;
     const drag_index_sel = parseInt(ev.dataTransfer.getData("text"));

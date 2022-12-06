@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import { Icon, SearchBar, Tile } from './Components';
-import { getCookie, dateToYMD, compare_date_arr } from "./Utils";
 import { getData } from "./DataConnector"
 import ExercisePlay from "./Exercise";
 
@@ -310,7 +309,7 @@ class BlogEntry extends React.Component {
       }
     };
 
-    let exercise =  data.exercise_id;// ? <ExercisePlay id={data.exercise_id} blog={true}/> : undefined;
+    let exercise =  data.exercise;// ? <ExercisePlay id={data.exercise_id} blog={true}/> : undefined;
 
     switch(size) {
       case 1:
@@ -377,7 +376,7 @@ class BlogEntry extends React.Component {
                   </figure>
                 }
             <div className={"content "+content_size+" has-text-justified"}>
-              {text.split('\n').map(str => <p>{str}</p>)}
+              {text.split('\n').map((str, index) => <p key={"line"+index}>{str}</p>)}
 
             </div>
             {exercise &&

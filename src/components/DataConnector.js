@@ -1,5 +1,5 @@
-import blog_data from './BlogData.js';
-import exercise_data from './ExerciseData.js';
+import blog_data, {blog_list_from_api, blog_from_api} from './BlogData.js';
+import exercise_data, { ExerciseDataList, exercise_list_from_api, exercise_from_api } from './ExerciseData.js';
 
 
 export const global_url = 'http://127.0.0.1:5000/api/';
@@ -42,10 +42,45 @@ function getDataLocal(endpoint, id, query, page, count){
 }
 
 
-function getDataApi(endpoint){
+function dataFromApi(endpoint, id, data){
+  if(id!==undefined){
+    return singleFromApi(endpoint, data);
+  }
+  return listFromApi(endpoint, data.data);
+}
+
+function singleFromApi(endpoint, data){
+  const converters = {blog: blog_from_api, exercise: exercise_from_api};
+  if(endpoint in converters){
+      const converter = converters[endpoint];
+      return {data: converter(data), count: 1};
+  }
+  return undefined;
+}
+
+function listFromApi(endpoint, data){
+  const converters = {blog: blog_list_from_api, exercise: exercise_list_from_api};
+  if(endpoint in converters){
+      const converter = converters[endpoint];
+      return converter(data);
+  }
+  return undefined;
+}
+
+
+function make_url(endpoint, id, query, page){
+  let url = global_url+endpoint+'/';
+  if(id!==undefined){
+    url +=id;
+  }
+  return url;
+}
+
+
+function getDataApi(endpoint, id, query, page, count){
     const token = 'aspdsadkhsa';
     return new Promise((resolve, reject) => {
-        let url = global_url+endpoint+'/';
+        const url = make_url(endpoint, id, query, page);
         fetch(url, {
           method: 'GET',
           headers: {
@@ -60,8 +95,7 @@ function getDataApi(endpoint){
             return response.json();
           })
           .then(data => {
-              console.log(data);
-              resolve(data);
+              resolve(dataFromApi(endpoint, id, data));
             }).catch(error => {reject(error)});
          });
 }

@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {shuffleArray} from "./Utils";
 import {WordButton, ResultDisplay} from "./ExerciseComponents";
 
@@ -217,17 +217,12 @@ class ConjugationPlay extends React.Component {
   }
 
   render () {
-    const {data, results} = this.props;
+    const {data} = this.props;
     const {words } = data;
     const {selection} = this.state;
-    //if (words.length === 0){
-    //  return <p>Brak słów</p>;
-    //}
-
     const persons = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
     const conjugation = words.map((el, index) => {return el.variant});
 
-    const result = <ResultDisplay text="aaa" result={this.checkResult(0, 0)}/>;
     return (
       <React.Fragment>
         <div className="level">
