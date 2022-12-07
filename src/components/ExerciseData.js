@@ -88,7 +88,7 @@ class SentenceData {
 class ExternalData extends ExerciseData{
   constructor(id, title, categories, level, external_code) {
     super(id, title, categories, level);
-    this.type = 9;
+    this.type = 90;
     this.external_code = external_code;
   }
 }
@@ -181,14 +181,36 @@ const exercise_data_def = [
   ];
 
 
+function get_option(data, option_name){
+  if('options' in data){
+    const found_options = data.options.filter((option) => {return option.name === option_name});
+    if (found_options.length >= 1){
+      return found_options[0].value;
+    }
+  }
+  return undefined;
+}
+
+
+function words_from_api(api_words){
+  const words = [];
+  for(const word of api_words){
+    const variant = word.word.variant && word.word.variant !== '' ? word.word.variant.split(', ') : [] ;
+    words.push(new WordData(word.word.word, word.word.translation, word.word.preposition, variant));
+  }
+  return words;
+}
+
 function conjugation_from_api(data){
-  const with_persons = false;
-  return new ConjugationData(data._id, data.title, data.categories, data.level, data.words, with_persons);
+  const with_persons = get_option(data, 'with_persons') === 1 ? true : false;
+  const words = words_from_api(data.words);
+  return new ConjugationData(data._id, data.title, data.categories, data.level, words, with_persons);
 }
 
 
 function translation_from_api(data){
-  return new TranslationData(data._id, data.title, data.categories, data.level, data.words, 10);
+  const words = words_from_api(data.words);
+  return new TranslationData(data._id, data.title, data.categories, data.level, words, 10);
 }
 
 
@@ -202,7 +224,10 @@ function gap_from_api(data){
 
 
 function extern_from_api(data){
-  return new ExternalData(data._id, data.title, data.categories, data.level, data.externals[0]);
+  const external = 'externs' in data && data.externs.length >= 1 ? <React.Fragment>
+    <div dangerouslySetInnerHTML={{ __html: data.externs[0].code }} />
+  </React.Fragment> : <React.Fragment></React.Fragment>;
+  return new ExternalData(data._id, data.title, data.categories, data.level, external);
 }
 
 
@@ -234,6 +259,4 @@ const exercise_data = new ExerciseDataList(exercise_data_def);
 
 export default exercise_data;
 
-export {
-  ExerciseData, exercise_list_from_api, exercise_from_api, ConjugationData, WordData
-}
+export {exercise_list_from_api, exercise_from_api}

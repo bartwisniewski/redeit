@@ -85,6 +85,7 @@ handleRestart = () => {
     const { id } = this.props;
 
     let exercise = data.id;
+
     switch(data.type) {
           case 0:
               exercise = finished ? <ConjugationPreview data ={data} results={results}/> : <ConjugationPlay data ={data} results={results} setResults={this.setResults}/>;

@@ -1,5 +1,5 @@
 import blog_data, {blog_list_from_api, blog_from_api} from './BlogData.js';
-import exercise_data, { ExerciseDataList, exercise_list_from_api, exercise_from_api } from './ExerciseData.js';
+import exercise_data, {exercise_list_from_api, exercise_from_api} from './ExerciseData.js';
 
 
 export const global_url = 'http://127.0.0.1:5000/api/';
@@ -46,7 +46,10 @@ function dataFromApi(endpoint, id, data){
   if(id!==undefined){
     return singleFromApi(endpoint, data);
   }
-  return listFromApi(endpoint, data.data);
+  const list_data = listFromApi(endpoint, data.data);
+  list_data['next'] = data.next;
+  list_data['previous'] = data.previous;
+  return list_data;
 }
 
 function singleFromApi(endpoint, data){
@@ -68,10 +71,30 @@ function listFromApi(endpoint, data){
 }
 
 
+function arg_sign(url){
+  return url.slice(-1) === '/' ? '?' : '&';
+}
+
+function add_arg(url, arg_name, arg_val){
+    url+=arg_sign(url);
+    url+=arg_name;
+    url+='=';
+    url+=arg_val;
+    return url;
+}
+
 function make_url(endpoint, id, query, page){
   let url = global_url+endpoint+'/';
   if(id!==undefined){
     url +=id;
+  }
+  else{
+    if(query!==undefined && query.length >= 2){
+      url = add_arg(url, 'query', query);
+    }
+    if(page!==undefined){
+      url = add_arg(url, 'page', page);
+    }
   }
   return url;
 }

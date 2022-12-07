@@ -41,7 +41,7 @@ class Blog extends React.Component{
 }
 
   render(){
-    const {view, entry_id, refresh} = this.state;
+    const {refresh} = this.state;
     const {match} = this.props;
     const match_parent = match;
 
@@ -96,7 +96,7 @@ class BlogTiles extends React.Component{
 
 
   render(){
-    const { loaded, placeholder, endpoint, data, query} = this.state;
+    const { loaded, placeholder, data, query} = this.state;
     if (!loaded)
       return <p>{placeholder}</p>;
 
@@ -112,8 +112,6 @@ class BlogTiles extends React.Component{
       el2 = elements.length >= 2 ? elements.splice(0, 2) : (elements.length >=1 ? elements.splice(0, 1) : []);
     }
 
-    const colours = ["is-dark","is-danger","is-warning", "is-info", "is-link", "is-success"];
-    //
     return (<React.Fragment>
               <div className="column is-2 is-offset-1">
                 <div className="level">
@@ -210,26 +208,34 @@ class BlogList extends React.Component{
       data : [],
       page : 0,
       count: 10,
-      data_length: 0,
+      previous: undefined,
+      next: undefined,
       loaded: false,
       placeholder: "Ładowanie...",
     };
   }
 
-
-  loadMore = () => {
-      let {page, count, data_length} = this.state;
-      if (data_length > (page+1)*count)
+  nextPage = () => {
+      const {next} = this.state;
+      if (next !== undefined && next !== null)
         {
-        page+=1;
-        this.setState({ page: page}, this.getEntries);
+        this.setState({ page: next}, this.getEntries);
         }
   }
+
+  prevPage = () => {
+    const {previous} = this.state;
+    if (previous !== undefined && previous !== null)
+      {
+      this.setState({ page: previous}, this.getEntries);
+      }
+}
 
   getEntries = () => {
     const {page, count} = this.state;
     const {query} = this.props;
-    getData('blog', undefined, query, page, count).then(ret => this.setState({ data: ret.data, data_length: ret.count, loaded: true }));
+    getData('blog', undefined, query, page, count)
+    .then(ret => this.setState({ data: ret.data, next: ret.next, previous: ret.previous, loaded: true }));
   };
 
   componentDidMount() {
@@ -247,7 +253,7 @@ class BlogList extends React.Component{
 }
 
   render(){
-    const { loaded, placeholder, data} = this.state;
+    const { loaded, placeholder, data, next, previous} = this.state;
     const { query, match} = this.props;
     const no_entries = query ? "brak pasujących wpisów" : "brak wpisów";
 
@@ -259,15 +265,29 @@ class BlogList extends React.Component{
 
     const elements = [...data];
     const colours = ["is-dark","is-danger","is-warning", "is-info", "is-link", "is-success"];
+    const prev_en = previous !== undefined && previous !== null;
+    const next_en = next !== undefined && next !== null 
+    const nav_en = prev_en || next_en;
+
     return (<React.Fragment>
+
               <div>
                 <ul>
+                  {nav_en && <li key="buttons top" style={{paddingBottom: "0.5rem"}}>
+                    {prev_en && <button onClick={this.prevPage}>{'<'}</button>}
+                    {next_en && <button onClick={this.nextPage}>{'>'}</button>}
+                  </li>}
                     {elements.map((el, index) => {
                         const blog_entry = <BlogEntry size={3} data = {el} match={match}/>;
                         return <li style={{paddingBottom: "1.5rem"}} key={"blog_entry_"+index}><div className={"notification "+colours[index%(colours.length-1)]}>{blog_entry}</div></li>
                         })}
+                  {nav_en && <li key="buttons bottom">
+                    {prev_en && <button onClick={this.prevPage}>{'<'}</button>}
+                    {next_en && <button onClick={this.nextPage}>{'>'}</button>}
+                  </li>}
                 </ul>
               </div>
+
          </React.Fragment>);
   }
 }
@@ -291,21 +311,15 @@ class BlogEntry extends React.Component {
     let subtitle_size = 5;
     let content_size = "is-medium";
     let text = data.entry_text;
-    let garbage_icon = "essentials32-garbage-1";
-    let edit_icon = "essentials32-edit";
     let img_style = {display: "block", marginLeft: "auto", marginRight: "auto", width: "70%", marginTop: 10, marginBottom: 20};
     const {picture} = data;
     let picture_url = "";
-    let picture_name = "";
     if (picture) {
       if (typeof picture === 'string'){
         picture_url = picture;
-        var res = picture.split("/");
-        picture_name = res[res.length-1];
       }
       else {
         picture_url = URL.createObjectURL(picture);
-        picture_name = picture.name;
       }
     };
 
@@ -316,32 +330,23 @@ class BlogEntry extends React.Component {
         title_size = 4;
         subtitle_size = 5;
         content_size = "is-medium";
-        garbage_icon = "essentials32-garbage-1";
-        edit_icon = "essentials32-edit";
         exercise = data.exercise ? <ExercisePlay id={data.exercise} blog={true}/> : "";
-        //img_style = {maxWidth: 800};
-        //if (data.text.length > 270)
         text = data.entry_text;//.split('\n').map(str => <p>{str}</p>);//.substring(0, 270) + " ...";
         break;
       case 2:
         title_size = 5;
         subtitle_size = 6;
         content_size = "is-small";
-        garbage_icon = "essentials16-garbage-1";
-        edit_icon = "essentials16-edit";
         exercise = data.exercise ? <ExercisePlay id={data.exercise} blog={true}/> : "";
-        text = data.entry_text.length > 180 ? data.entry_text.substring(0, 180) + " ..." : data.entry_text;
+        text = data.entry_text && data.entry_text.length > 180 ? data.entry_text.substring(0, 180) + " ..." : data.entry_text;
         break;
       case 3:
         title_size = 6;
         subtitle_size = 7;
         content_size = "is-small";
-        garbage_icon = "essentials16-garbage-1";
-        edit_icon = "essentials16-edit";
         exercise = undefined;
         img_style = {display: "block", marginLeft: "auto", marginRight: "auto", width: "30%", marginTop: 10, marginBottom: 20};
-        //img_style = {maxWidth: 100};
-        text = data.entry_text.length > 90 ? data.entry_text.substring(0, 90) + " ..." : data.entry_text;
+        text = data.entry_text && data.entry_text.length > 90 ? data.entry_text.substring(0, 90) + " ..." : data.entry_text;
         break;
       default:
           ;
@@ -375,10 +380,11 @@ class BlogEntry extends React.Component {
                     <img src={picture_url} alt="Zdjęcie do wpisu"/>
                   </figure>
                 }
+            {text &&
             <div className={"content "+content_size+" has-text-justified"}>
-              {text.split('\n').map((str, index) => <p key={"line"+index}>{str}</p>)}
-
+                {text.split('\n').map((str, index) => <p key={"line"+index}>{str}</p>)}
             </div>
+            }
             {exercise &&
             <div>
               {exercise}
